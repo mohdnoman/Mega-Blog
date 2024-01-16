@@ -1,22 +1,25 @@
-import conf from '../conf/conf'
-
+import conf from '../conf/conf.js';
 import { Client, Account, ID } from "appwrite";
 
+
 export class AuthService {
-    Client = new Client();
+    client = new Client();
     account;
+
     constructor() {
-        this.Client
+        this.client
             .setEndpoint(conf.appwriteUrl)
             .setProject(conf.appwriteProjectId);
-        this.account = new Account(this.Client)
+        this.account = new Account(this.client);
+
     }
 
     async createAccount({ email, password, name }) {
         try {
-            const userAccount = await this.account.create(ID.unique(), email, password, name)
+            const userAccount = await this.account.create(ID.unique(), email, password, name);
             if (userAccount) {
-                return this.logIn({ email, password });
+                // call another method
+                return this.login({ email, password });
             } else {
                 return userAccount;
             }
@@ -25,7 +28,7 @@ export class AuthService {
         }
     }
 
-    async logIn({ email, password }) {
+    async login({ email, password }) {
         try {
             return await this.account.createEmailSession(email, password);
         } catch (error) {
@@ -37,21 +40,22 @@ export class AuthService {
         try {
             return await this.account.get();
         } catch (error) {
-            throw error
+            console.log("Appwrite serive :: getCurrentUser :: error", error);
         }
 
         return null;
     }
 
-    async logOut() {
+    async logout() {
+
         try {
-            return await this.account.deleteSessions();
+            await this.account.deleteSessions();
         } catch (error) {
-            console.log("Appwrite service :: logout :: error", error)
+            console.log("Appwrite serive :: logout :: error", error);
         }
     }
 }
 
-const authservice = new AuthService();
+const authService = new AuthService();
 
-export default authservice
+export default authService
