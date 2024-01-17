@@ -5,10 +5,10 @@ import authService from "./appwrite/auth";
 import { login, logout } from "./store/authSlice";
 import { Header, Footer } from "./components";
 import { Outlet } from "react-router";
+import { BrowserRouter as Router } from "react-router-dom";
 
 function App() {
   const [loading, setLoading] = useState(true);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,22 +21,29 @@ function App() {
           dispatch(logout());
         }
       })
-      .catch((userData) => {
-        console.log(userData);
+      .catch((error) => {
+        console.log("Error fetching user data:", error);
+        dispatch(logout());
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, []); // Empty dependency array ensures that the effect runs only once
 
   if (loading) {
     return "Loading...";
   } else {
-    <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
-      <div className="w-full block">
-        <Header />
-        <main>{/* <Outlet /> */}</main>
-        <Footer />
-      </div>
-    </div>;
+    return (
+      <Router>
+        <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
+          <div className="w-full block">
+            <Header />
+            <main>
+              <Outlet />
+            </main>
+            <Footer />
+          </div>
+        </div>
+      </Router>
+    );
   }
 }
 
