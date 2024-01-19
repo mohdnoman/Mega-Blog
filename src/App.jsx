@@ -5,7 +5,6 @@ import authService from "./appwrite/auth";
 import { login, logout } from "./store/authSlice";
 import { Header, Footer } from "./components";
 import { Outlet } from "react-router";
-import { BrowserRouter as Router } from "react-router-dom";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -28,23 +27,18 @@ function App() {
       .finally(() => setLoading(false));
   }, []); // Empty dependency array ensures that the effect runs only once
 
-  if (loading) {
-    return "Loading...";
-  } else {
-    return (
-      <Router>
-        <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
-          <div className="w-full block">
-            <Header />
-            <main>
-              <Outlet />
-            </main>
-            <Footer />
-          </div>
-        </div>
-      </Router>
-    );
-  }
+  return !loading ? (
+    <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
+      <div className="w-full block">
+        <Header />
+        <main>
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
+    </div>
+  ) : null;
 }
+
 
 export default App;
