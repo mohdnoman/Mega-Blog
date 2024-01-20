@@ -17,8 +17,10 @@ export default function Post() {
   useEffect(() => {
     if (slug) {
       appwriteService.getPost(slug).then((post) => {
-        if (post) setPost(post);
-        else navigate("/");
+        if (post) {
+          console.log("Post Data:", post);
+          setPost(post);
+        } else navigate("/");
       });
     } else navigate("/");
   }, [slug, navigate]);
@@ -38,28 +40,30 @@ export default function Post() {
         <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
           <img
             src={appwriteService.getFilePreview(post.featuredImage)}
-            alt={post.title}
-            className="rounded-xl"
+            alt={post.Title}
+            className="rounded-xl  object-cover  h-auto w-1/2"
           />
 
-          {isAuthor && (
-            <div className="absolute right-6 top-6">
-              <Link to={`/edit-post/${post.$id}`}>
-                <Button bgColor="bg-green-500" className="mr-3">
-                  Edit
-                </Button>
-              </Link>
-              <Button bgColor="bg-red-500" onClick={deletePost}>
-                Delete
-              </Button>
-            </div>
-          )}
+            {isAuthor && (
+                        <div className="absolute right-6 top-6">
+                            <Link to={`/edit-post/${post.$id}`}>
+                                <Button bgColor="bg-green-500" className="mr-3">
+                                    Edit
+                                </Button>
+                            </Link>
+                            <Button bgColor="bg-red-500" onClick={deletePost}>
+                                Delete
+                            </Button>
+                        </div>
+                    )}
         </div>
         <div className="w-full mb-6">
-          <h1 className="text-2xl font-bold">{post.title}</h1>
+          <h1 className="text-3xl font-bold">{post.Title}</h1>
         </div>
-        <div className="browser-css">{parse(String(post.content))}</div>
+        <div className="prose">{parse(post?.Content)}</div>
+        {console.log(post.Content)}
       </Container>
     </div>
   ) : null;
-}
+};
+
